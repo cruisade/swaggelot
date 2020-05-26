@@ -1,0 +1,25 @@
+version: "3"
+services:
+  weather-service:
+    build: ./WeatherService
+    ports:
+      - "8081:8080"
+      
+  order-service:
+    build: ./OrderService
+    ports:
+      - "8082:8080"
+
+  sso-service:
+    build: ./SampleOAuth
+    ports:
+      - "8083:8080"
+
+  api-gateway:
+    build: .
+    environment:
+      - AUTHENTICATION_AUTHORITY=http://sso-service:8080
+    volumes:
+      - ./SampleOcelot/ocelot:/app/ocelot 
+    ports:
+      - "8080:8080"

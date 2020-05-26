@@ -1,0 +1,61 @@
+{
+  "ReRoutes": [
+    {
+      "SwaggerKey": "orders",
+      "DownstreamPathTemplate": "/api/v{version}/customers/{customerId}/orders",
+      "UpstreamPathTemplate": "/api/v{version}/orders",
+      "UpstreamHttpMethod": [
+        "Get", "Post"
+      ],
+      "ChangeDownstreamPathTemplate": {
+        "customerId": "Claims[sub]  > value"
+      },
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "order-service",
+          "Port": 8080
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "SwaggerKey": "orders",
+      "DownstreamPathTemplate": "/api/v{version}/customers/{customerId}/orders/{orderId}",
+      "UpstreamPathTemplate": "/api/v{version}/orders/{orderId}",
+      "UpstreamHttpMethod": [
+        "Get"
+      ],
+      "ChangeDownstreamPathTemplate": {
+        "customerId": "Claims[sub]  > value"
+      },
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "order-service",
+          "Port": 8080
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    }
+  ],
+  "SwaggerSettings": {
+    "Endpoints": [
+      {
+        "Key": "orders",
+        "Versions": [
+          {
+            "Version": 1,
+            "Url": "http://order-service:8080/swagger/v1/swagger.json"
+          }
+        ]
+      }
+    ]
+  }
+}

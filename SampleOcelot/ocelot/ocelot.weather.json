@@ -1,0 +1,45 @@
+{
+  "ReRoutes": [
+    {
+      "SwaggerKey": "weather",
+      "DownstreamPathTemplate": "/api/v{version}/weatherforecast",
+      "UpstreamPathTemplate": "/api/v{version}/forecast",
+      "UpstreamHttpMethod": [
+        "Get"
+      ],
+      "AddHeadersToRequest": {
+      },
+      "AddQueriesToRequest": {
+        "city": "Claims[location] > value"
+      },
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "weather-service",
+          "Port": 8080
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    }
+  ],
+  "SwaggerSettings": {
+    "Endpoints": [
+      {
+        "Key": "weather",
+        "Versions": [
+          {
+            "Version": 1,
+            "Url": "http://weather-service:8080/swagger/v1/swagger.json"
+          },
+          {
+            "Version": 2,
+            "Url": "http://weather-service:8080/swagger/v2/swagger.json"
+          }
+        ]
+      }
+    ]
+  }
+}

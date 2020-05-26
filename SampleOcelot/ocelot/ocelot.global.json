@@ -1,0 +1,24 @@
+{
+  "ReRoutes": [
+    {
+      "DownstreamPathTemplate": "/connect/token",
+      "UpstreamPathTemplate": "/connect/token",
+      "UpstreamHttpMethod": [
+        "Post"
+      ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "sso-service",
+          "Port": 8080
+        }
+      ]
+    }
+  ],
+  "SwaggerSettings": {
+    "Auth": {
+      "TokenUrl": "http://localhost:8080/connect/token"
+    }
+  },
+  "GlobalConfiguration": {}
+}
