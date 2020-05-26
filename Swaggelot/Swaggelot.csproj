@@ -2,6 +2,10 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
+        <PackageId>Swaggelot</PackageId>
+        <Version>1.0.1-alpha</Version>
+        <Authors>Kirill Ignatov</Authors>
+        <PackageTags>Ocelot, Swagger, ApiGateway</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>
