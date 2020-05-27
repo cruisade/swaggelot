@@ -13,6 +13,9 @@
         <None Update="ocelot">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="ocelot-local">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Swaggelot\Swaggelot.csproj" />

@@ -16,7 +16,10 @@ namespace SampleOcelot
             Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((context, builder) =>
                     builder
-                        .AddOcelotConfig("./ocelot")
+                        .AddOcelotConfig(
+                            context.HostingEnvironment.EnvironmentName=="Development"
+                            ?"./ocelot-local"
+                            :"./ocelot")
                         .AddEnvironmentVariables())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

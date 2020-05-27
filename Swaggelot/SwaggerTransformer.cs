@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Extensions;
@@ -18,15 +18,19 @@ namespace Swaggelot
         private readonly IOpenApiCollector _collector;
         private readonly IEnumerable<ReRouteOptions> _reRoutes;
         private readonly string _authUrl;
+        private readonly ILogger _logger;
+
         private Dictionary<SwaggerDescriptor, OpenApiDocument> _innerDocs;
         private OpenApiDocument _document;
 
         public SwaggerTransformer(
             IOpenApiCollector collector,
             IOptions<List<ReRouteOptions>> reRoutes,
-            IOptions<SwaggerSettings> swaggerSettings)
+            IOptions<SwaggerSettings> swaggerSettings,
+            ILogger<SwaggerTransformer> logger)
         {
             _collector = collector;
+            _logger = logger;
             _authUrl = swaggerSettings.Value.Auth?.TokenUrl;
             _reRoutes = reRoutes.Value;
         }
@@ -52,7 +56,7 @@ namespace Swaggelot
         {
             foreach (var innerSwaggersValue in _innerDocs.Values)
             {
-                if (innerSwaggersValue==null)
+                if (innerSwaggersValue == null)
                     continue;
 
                 foreach (var openApiSchema in innerSwaggersValue.Components.Schemas)
@@ -67,24 +71,45 @@ namespace Swaggelot
             SwaggerDescriptor descriptor,
             OpenApiDocument innerDocument)
         {
+            if (!route.DownstreamPathTemplate.Contains(Constants.EverythingAnchor))
+            {
+                ProcessWithInnerSwaggerForSingleDestinationDownstream(route, descriptor, innerDocument);
+                return;
+            }
+
+            if (!route.UpstreamPathTemplate.Contains(Constants.EverythingAnchor))
+            {
+                throw new InvalidOperationException(
+                    $"Can't map upstream ({route.UpstreamPathTemplate}) to downstream ({route.DownstreamPathTemplate})");
+            }
+
+            ProcessWithInnerSwaggerForManyDestinationDownstream(route, descriptor, innerDocument);
+        }
+
+
+        private void ProcessWithInnerSwaggerForSingleDestinationDownstream(
+            ReRouteOptions route,
+            SwaggerDescriptor descriptor,
+            OpenApiDocument innerDocument)
+        {
             var version = descriptor.Version.ToString();
-            var upstreamTemplate = route.UpstreamPathTemplate.Replace(VersionConstants.VersionAnchor, version);
-            var downstreamTemplate = route.DownstreamPathTemplate.Replace(VersionConstants.VersionAnchor, version);
+            var upstreamTemplate = ReplaceVersion(route.UpstreamPathTemplate, version);
+            var downstreamTemplate = ReplaceVersion(route.DownstreamPathTemplate, version);
 
             if (!innerDocument.Paths
-                .Select(s => s.Key.Replace(VersionConstants.VersionAnchor, version).ToLower())
+                .Select(s => ReplaceVersion(s.Key, version).ToLower())
                 .Contains(downstreamTemplate.ToLower()))
                 return;
 
             var path = innerDocument.Paths.FirstOrDefault(p =>
                 string.Equals(
-                    p.Key.Replace(VersionConstants.VersionAnchor, version),
+                    ReplaceVersion(p.Key, version),
                     downstreamTemplate,
                     StringComparison.CurrentCultureIgnoreCase));
 
 
             var operations = GetOperationsForPath(route, path.Value);
-            
+
             if (operations != null)
             {
                 AddAuth(route, operations);
@@ -92,25 +117,68 @@ namespace Swaggelot
             }
         }
 
+        private void ProcessWithInnerSwaggerForManyDestinationDownstream(
+            ReRouteOptions route,
+            SwaggerDescriptor descriptor,
+            OpenApiDocument innerDocument)
+        {
+            var version = descriptor.Version.ToString();
+            var upstreamTemplate = RemoveEverything(ReplaceVersion(route.UpstreamPathTemplate, version));
+            var downstreamTemplate = RemoveEverything(ReplaceVersion(route.DownstreamPathTemplate, version));
+
+            var reRoutedPaths = innerDocument.Paths
+                .Select(p => new
+                {
+                    path = ReplaceVersion(p.Key, version),
+                    openApiPathItem = p.Value
+                })
+                .Where(p => p.path.StartsWith(downstreamTemplate, StringComparison.OrdinalIgnoreCase))
+                .ToDictionary(p => p.path.Replace(downstreamTemplate, upstreamTemplate), p => p.openApiPathItem);
+
+            foreach (var path in reRoutedPaths)
+            {
+                var operations = GetOperationsForPath(route, path.Value);
+                if (operations != null)
+                {
+                    AddAuth(route, operations);
+                    AddOperations(path.Key, operations);
+                }
+            }
+        }
+
+        private string ReplaceVersion(string value, string version) => value.Replace(Constants.VersionAnchor, version,
+            StringComparison.OrdinalIgnoreCase);
+
+        private string RemoveEverything(string value) =>
+            value.Replace("{everything}", string.Empty, StringComparison.OrdinalIgnoreCase);
+
+
         private OpenApiPathItem GetOperationsForPath(ReRouteOptions route, OpenApiPathItem path)
         {
-            var operations = new OpenApiPathItem();
-            foreach (var verb in route.UpstreamHttpMethod)
-            {
-                Enum.TryParse<OperationType>(verb, out var typedVerb);
+            IDictionary<OperationType, OpenApiOperation> operationsByTypes = route.UpstreamHttpMethod == null
+                ? path.Operations
+                : route.UpstreamHttpMethod
+                    .Select(x => Enum.TryParse<OperationType>(x, out var result) ? result : (OperationType?) null)
+                    .OfType<OperationType>()
+                    .ToDictionary(
+                        x => x,
+                        x => path.Operations.TryGetValue(x, out var result) ? result : null);
 
-                if (!path.Operations.ContainsKey(typedVerb))
+
+            var operations = new OpenApiPathItem();
+            foreach (var operationItem in operationsByTypes)
+            {
+                var typedVerb = operationItem.Key;
+                var operation = operationItem.Value;
+                if (operation == null)
                 {
-                    //todo log
-                    Console.WriteLine($"{typedVerb} not found for {route.DownstreamPath}");
+                    _logger.LogWarning($"{typedVerb} not found for {route.DownstreamPath}");
                     return null;
                 }
 
-                var operation = path.Operations[typedVerb];
-
                 var predefinedParams =
                     route.ChangeDownstreamPathTemplate.Keys.Select(s => s.ToLower()).ToList();
-                predefinedParams.Add(VersionConstants.VersionVariableName);
+                predefinedParams.Add(Constants.VersionVariableName);
 
                 var filteredParameters = operation.Parameters
                     .Where(p => !predefinedParams.Contains(p.Name.ToLower()))
@@ -168,6 +236,7 @@ namespace Swaggelot
 
             _innerDocs
                 .Where(kv => keysForInnerDoc.Contains(kv.Key))
+                .Where(kv => kv.Value != null)
                 .ForEach(tuple => ProcessWithInnerSwagger(route, tuple.Key, tuple.Value));
         }
     }

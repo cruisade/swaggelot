@@ -3,7 +3,6 @@
 
 
 using IdentityServer4;
-using IdentityServer4.Quickstart.UI;
 using IdentityServer4.Services;
 using IdentityServer4.Test;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -29,7 +28,7 @@ namespace SampleOAuth
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddControllers();
 
             var builder = services.AddIdentityServer(options =>
                 {
@@ -39,13 +38,11 @@ namespace SampleOAuth
                     options.Events.RaiseSuccessEvents = true;
                 })
                 .AddTestUsers(TestUsers.Users);
-
-            // in-memory, code config
+            
             builder.AddInMemoryIdentityResources(Config.Ids);
             builder.AddInMemoryApiResources(Config.Apis);
             builder.AddInMemoryClients(Config.Clients);
-            
-            
+
             builder.AddDeveloperSigningCredential();
             
             services.AddAuthentication();
@@ -62,11 +59,6 @@ namespace SampleOAuth
 
         public void Configure(IApplicationBuilder app)
         {
-            if (Environment.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
             app.UseStaticFiles();
             app.UseRouting();
             app.UseCors("CorsPolicy");

@@ -14,6 +14,5 @@ namespace Swaggelot.Models
     public class AuthSettings
     {
         public string TokenUrl { get; set; }
-        //todo flow
     }
 }

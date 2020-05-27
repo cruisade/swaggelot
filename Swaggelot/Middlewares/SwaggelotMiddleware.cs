@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Swaggelot.Cache;
+using Microsoft.Extensions.Logging;
 
 namespace Swaggelot.Middlewares
 {
@@ -10,26 +10,23 @@ namespace Swaggelot.Middlewares
     /// </summary>
     public class SwaggerForOcelotMiddleware
     {
-        private readonly ISwaggerService _cache;
-
-        public SwaggerForOcelotMiddleware(
-            RequestDelegate next,
-            ISwaggerService cache)
+        public SwaggerForOcelotMiddleware(RequestDelegate next)
         {
-            _cache = cache;
         }
 
-        public async Task Invoke(HttpContext context)
+        public async Task InvokeAsync(
+            HttpContext context,
+            ISwaggerTransformer transformer,
+            ILogger<SwaggerForOcelotMiddleware> logger)
         {
             try
             {
-                var content = await _cache.GetSwagger();
+                var content = await transformer.Transform();
                 await context.Response.WriteAsync(content);
             }
             catch (Exception ex)
-            { 
-                //todo logger
-                Console.WriteLine(ex);
+            {
+                //logger.LogError(ex, ex.Message);
                 throw;
             }
         }

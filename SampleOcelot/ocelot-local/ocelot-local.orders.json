@@ -13,8 +13,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "order-service",
-          "Port": 8080
+          "Host": "localhost",
+          "Port": 8082
         }
       ],
       "AuthenticationOptions": {
@@ -35,8 +35,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "order-service",
-          "Port": 8080
+          "Host": "localhost",
+          "Port": 8082
         }
       ],
       "AuthenticationOptions": {
@@ -64,7 +64,7 @@
         "Versions": [
           {
             "Version": 1,
-            "Url": "http://order-service:8080/swagger/v1/swagger.json"
+            "Url": "http://localhost:8082/swagger/v1/swagger.json"
           }
         ]
       }

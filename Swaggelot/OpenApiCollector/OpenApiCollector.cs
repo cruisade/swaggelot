@@ -14,13 +14,16 @@ namespace Swaggelot.OpenApiCollector
     public class OpenApiCollector : IOpenApiCollector
     {
         private readonly HttpClient _client;
+        private readonly ILogger _logger;
         private readonly IEnumerable<SwaggerEndPointOptions> _swaggerEndpoints;
 
         public OpenApiCollector(
             IOptions<SwaggerSettings> swaggerSettings,
-            HttpClient client)
+            HttpClient client,
+            ILogger<OpenApiCollector> logger)
         {
             _client = client;
+            _logger = logger;
             _swaggerEndpoints = swaggerSettings.Value.Endpoints;
         }
 
@@ -46,7 +49,7 @@ namespace Swaggelot.OpenApiCollector
             }
             catch (Exception e)
             {
-                //todo log
+                _logger.LogWarning(e, $"Can't load downstream swagger {endpoint.Url}");
                 return (descriptor, null);
             }
         }

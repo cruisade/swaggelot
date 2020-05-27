@@ -13,4 +13,32 @@
         <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\css\site.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\site.less" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\site.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\favicon.ico" />
+      <_ContentIncludedByDefault Remove="wwwroot\icon.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\icon.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\signin-redirect.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\signout-redirect.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\css\bootstrap.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\css\bootstrap.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\css\bootstrap.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\js\bootstrap.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\js\bootstrap.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\jquery\jquery.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\jquery\jquery.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\jquery\jquery.min.map" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Quickstart" />
+    </ItemGroup>
+
 </Project>
