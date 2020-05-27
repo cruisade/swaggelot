@@ -16,6 +16,7 @@ namespace OrderService.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("sum/{left}/{right}")]
+        [HttpPost("sum/{left}/{right}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<decimal> Sum(decimal left, decimal right)
         {
@@ -27,6 +28,7 @@ namespace OrderService.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("division/{left}/{right}")]
+        [HttpPost("division/{left}/{right}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<decimal> Divide(decimal left, decimal right)
@@ -41,6 +43,7 @@ namespace OrderService.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("subtraction/{left}/{right}")]
+        [HttpPost("subtraction/{left}/{right}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<decimal> Sub(decimal left, decimal right)
         {
@@ -52,6 +55,7 @@ namespace OrderService.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("multiplication/{left}/{right}")]
+        [HttpPost("multiplication/{left}/{right}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<decimal> Multiplication(decimal left, decimal right)
         {

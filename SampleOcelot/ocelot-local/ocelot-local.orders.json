@@ -5,7 +5,8 @@
       "DownstreamPathTemplate": "/api/v{version}/customers/{customerId}/orders",
       "UpstreamPathTemplate": "/api/v{version}/orders",
       "UpstreamHttpMethod": [
-        "Get", "Post"
+        "Get",
+        "Post"
       ],
       "ChangeDownstreamPathTemplate": {
         "customerId": "Claims[sub]  > value"
@@ -49,6 +50,9 @@
       "DownstreamPathTemplate": "/api/v{version}/math-helper/{everything}",
       "UpstreamPathTemplate": "/api/v{version}/math/{everything}",
       "DownstreamScheme": "http",
+      "UpstreamHttpMethod": [
+        "Get"
+      ],
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",

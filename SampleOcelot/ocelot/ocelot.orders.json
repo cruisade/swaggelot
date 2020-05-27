@@ -49,6 +49,9 @@
       "DownstreamPathTemplate": "/api/v{version}/math-helper/{everything}",
       "UpstreamPathTemplate": "/api/v{version}/math/{everything}",
       "DownstreamScheme": "http",
+      "UpstreamHttpMethod": [
+        "Get"
+      ],
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
