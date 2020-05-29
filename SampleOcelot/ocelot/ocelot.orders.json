@@ -54,8 +54,8 @@
       ],
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 8082
+          "Host": "order-service",
+          "Port": 8080
         }
       ]
     }

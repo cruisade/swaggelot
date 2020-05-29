@@ -25,6 +25,6 @@ namespace Swaggelot.Extensions
 
         private static void UseSwaggerForOcelot(IApplicationBuilder app)
             => app.Map("/v1/swagger.json", builder =>
-                builder.UseMiddleware<SwaggerForOcelotMiddleware>());
+                builder.UseMiddleware<SwaggelotMiddleware>());
     }
 }

@@ -24,7 +24,11 @@ namespace Swaggelot.OpenApiCollector
         {
             _client = client;
             _logger = logger;
-            _swaggerEndpoints = swaggerSettings.Value.Endpoints;
+            _swaggerEndpoints = swaggerSettings?.Value?.Endpoints ?? new List<SwaggerEndPointOptions>();
+            if (swaggerSettings?.Value?.Endpoints == null)
+            {
+                _logger.LogWarning($"Swagger settings not found");
+            }
         }
 
         public async Task<Dictionary<SwaggerDescriptor, OpenApiDocument>> CollectDownstreamSwaggersAsync()

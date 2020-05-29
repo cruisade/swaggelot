@@ -8,16 +8,16 @@ namespace Swaggelot.Middlewares
     /// <summary>
     /// Middleware  for ocelot
     /// </summary>
-    public class SwaggerForOcelotMiddleware
+    public class SwaggelotMiddleware
     {
-        public SwaggerForOcelotMiddleware(RequestDelegate next)
+        public SwaggelotMiddleware(RequestDelegate next)
         {
         }
 
         public async Task InvokeAsync(
             HttpContext context,
             ISwaggerTransformer transformer,
-            ILogger<SwaggerForOcelotMiddleware> logger)
+            ILogger<SwaggelotMiddleware> logger)
         {
             try
             {
@@ -26,7 +26,7 @@ namespace Swaggelot.Middlewares
             }
             catch (Exception ex)
             {
-                //logger.LogError(ex, ex.Message);
+                logger.LogError(ex, ex.Message);
                 throw;
             }
         }
