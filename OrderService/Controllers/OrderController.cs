@@ -36,11 +36,14 @@ namespace OrderService.Controllers
         [HttpPost("customers/{customerId}/orders")]
         public Guid CreateOrder(Guid customerId, OrderCreateModel order)
         {
+            var rnd = new Random(10000);
             var model = new OrderReadModel()
             {
                 Goods = order.Goods,
                 ArriveAt = DateTime.UtcNow.AddDays(2),
-                OrderId = Guid.NewGuid()
+                OrderId = Guid.NewGuid(),
+                Cost = (decimal) rnd.NextDouble(),
+                Currency = order.Currency
             };
             if (!Orders.ContainsKey(customerId))
                 Orders.Add(customerId, new List<OrderReadModel>() {model});
@@ -49,8 +52,8 @@ namespace OrderService.Controllers
 
             return model.OrderId;
         }
-        
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+
+        [ProducesResponseType((int) HttpStatusCode.NotFound)]
         [HttpGet("customers/{customerId}/orders/{orderId}")]
         public ActionResult<OrderReadModel> GetById(Guid customerId, Guid orderId)
         {
