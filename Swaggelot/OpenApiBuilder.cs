@@ -1,6 +1,5 @@
+using System;
 using System.Collections.Generic;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Interfaces;
 using Microsoft.OpenApi.Models;
 
 namespace Swaggelot
@@ -69,17 +68,16 @@ namespace Swaggelot
                 Type = SecuritySchemeType.OAuth2,
                 Flows = new OpenApiOAuthFlows()
                 {
-                    Password = new OpenApiOAuthFlow(),
-                    ClientCredentials = new OpenApiOAuthFlow()
-                },
-                In = ParameterLocation.Header,
-                Extensions = new Dictionary<string, IOpenApiExtension>()
-                {
+                    Password = new OpenApiOAuthFlow()
                     {
-                        "tokenUrl",
-                        new OpenApiString($"{url}")
+                        TokenUrl = new Uri(url),
+                    },
+                    ClientCredentials = new OpenApiOAuthFlow()
+                    {
+                        TokenUrl = new Uri(url)
                     }
                 },
+                In = ParameterLocation.Header,
             };
         }
     }

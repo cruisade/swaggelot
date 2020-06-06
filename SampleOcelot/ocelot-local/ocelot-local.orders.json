@@ -9,7 +9,29 @@
         "Post"
       ],
       "ChangeDownstreamPathTemplate": {
-        "customerId": "Claims[sub]  > value"
+        "customerId": "Claims[userId]  > value"
+      },
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 8082
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "SwaggerKey": "orders",
+      "DownstreamPathTemplate": "/api/v{version}/customers/{customerId}/orders-form",
+      "UpstreamPathTemplate": "/api/v{version}/orders-form",
+      "UpstreamHttpMethod": [
+        "Post"
+      ],
+      "ChangeDownstreamPathTemplate": {
+        "customerId": "Claims[userId]  > value"
       },
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -31,7 +53,7 @@
         "Get"
       ],
       "ChangeDownstreamPathTemplate": {
-        "customerId": "Claims[sub]  > value"
+        "customerId": "Claims[userId]  > value"
       },
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

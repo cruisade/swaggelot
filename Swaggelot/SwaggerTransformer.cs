@@ -49,7 +49,7 @@ namespace Swaggelot
                 ProcessReroute(route);
             }
 
-            return _document.Serialize(OpenApiSpecVersion.OpenApi2_0, OpenApiFormat.Json);
+            return _document.Serialize(OpenApiSpecVersion.OpenApi3_0, OpenApiFormat.Json);
         }
 
         private IEnumerable<(string Key, OpenApiSchema Value)> GetSchemes()
