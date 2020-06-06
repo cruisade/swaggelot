@@ -1,0 +1,1 @@
+docker-compose up sso-service weather-service order-service 
