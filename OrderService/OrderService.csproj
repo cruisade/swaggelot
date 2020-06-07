@@ -11,4 +11,20 @@
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.3.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="order\values.yaml" />
+      <None Remove="order\templates\serviceaccount.yaml" />
+      <None Remove="order\templates\ingress.yaml" />
+      <None Remove="order\templates\hpa.yaml" />
+      <None Remove="order\templates\deployment.yaml" />
+      <None Remove="order\templates\_helpers.tpl" />
+      <None Remove="order\templates\NOTES.txt" />
+      <None Remove="order\Chart.yaml" />
+      <None Remove="order\.helmignore" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="order\templates\tests" />
+    </ItemGroup>
+
 </Project>
