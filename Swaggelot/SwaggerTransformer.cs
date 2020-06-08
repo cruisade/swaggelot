@@ -213,7 +213,7 @@ namespace Swaggelot
                 Type = ReferenceType.SecurityScheme
             };
             req.TryAdd(sch, new List<string>());
-            if (route.AuthenticationOptions?.AuthenticationProviderKey == "Bearer")
+            if (!string.IsNullOrEmpty(route.AuthenticationOptions?.AuthenticationProviderKey))
             {
                 foreach (var operation in operations.Operations)
                 {
