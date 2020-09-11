@@ -23,6 +23,54 @@
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
       }
+    },
+    {
+      "SwaggerKey": "weather",
+      "DownstreamPathTemplate": "/api/v2/weatherforecast",
+      "UpstreamPathTemplate": "/api/v2/forecastCustomAuth",
+      "UpstreamHttpMethod": [
+        "Post"
+      ],
+      "AddHeadersToRequest": {
+      },
+      "AddQueriesToRequest": {
+        "city": "Claims[location] > value"
+      },
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "weather-service",
+          "Port": 8080
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "SwaggerKey": "weather",
+      "DownstreamPathTemplate": "/api/v2/weatherforecast",
+      "UpstreamPathTemplate": "/api/v2/forecastDefaultAuth",
+      "UpstreamHttpMethod": [
+        "Post"
+      ],
+      "AddHeadersToRequest": {
+      },
+      "AddQueriesToRequest": {
+        "city": "Claims[location] > value"
+      },
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "weather-service",
+          "Port": 8080
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "SomeOtherScheme",
+        "AllowedScopes": []
+      }
     }
   ],
   "SwaggerSettings": {

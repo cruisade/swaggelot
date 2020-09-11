@@ -220,7 +220,7 @@ namespace Swaggelot
                     operation.Value.Security = new List<OpenApiSecurityRequirement>();
                     operation.Value.Security.Add(req);
 
-                    operation.Value.Responses.Add("401", new OpenApiResponse()
+                    operation.Value.Responses.TryAdd("401", new OpenApiResponse()
                     {
                         Description = "Unauthorized"
                     });

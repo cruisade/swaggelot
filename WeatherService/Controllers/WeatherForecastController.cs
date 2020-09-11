@@ -12,7 +12,7 @@ namespace WeatherService.Controllers
     [Route("api/v{version:apiVersion}/weatherforecast")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = {
+        private static readonly List<string> Summaries = new List<string> {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
@@ -39,7 +39,7 @@ namespace WeatherService.Controllers
                     City = string.IsNullOrEmpty(city) ? "Default city" : city,
                     Date = DateTime.Now.AddDays(index),
                     TemperatureC = rng.Next(-20, 55),
-                    Summary = Summaries[rng.Next(Summaries.Length)]
+                    Summary = Summaries[rng.Next(Summaries.Count)]
                 })
                 .ToArray();
         }
@@ -60,9 +60,23 @@ namespace WeatherService.Controllers
                     City = string.IsNullOrEmpty(city) ? "Default city" : city,
                     Date = DateTime.Now.AddDays(index),
                     TemperatureC = rng.Next(-20, 55),
-                    Summary = Summaries[rng.Next(Summaries.Length)]
+                    Summary = Summaries[rng.Next(Summaries.Count)]
                 })
                 .ToArray();
+        }
+        
+        /// <summary>
+        /// Add new city to forecast
+        /// </summary>
+        /// <param name="city"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ApiVersion("2.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public OkResult PostV2([FromQuery] string city)
+        {
+            Summaries.Add(city);
+            return Ok();
         }
         
     }

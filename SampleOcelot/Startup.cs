@@ -22,7 +22,13 @@ namespace SampleOcelot
         {
             services
                 .AddAuthentication()
-                .AddJwtBearer(options =>
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.Authority = Configuration["AUTHENTICATION_AUTHORITY"];
+                    options.Audience = "api1";
+                    options.RequireHttpsMetadata = false;
+                })
+                .AddJwtBearer("SomeOtherScheme", options =>
                 {
                     options.Authority = Configuration["AUTHENTICATION_AUTHORITY"];
                     options.Audience = "api1";
