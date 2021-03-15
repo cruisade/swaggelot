@@ -42,6 +42,7 @@ namespace Swaggelot
                 .Create()
                 .WithOAuth(_authUrl)
                 .WithSchemes(GetSchemes().GroupBy(s => s.Key).Select(g => g.First()).ToArray())
+                .WithTags(GetTags())
                 .Build();
 
             foreach (var route in _reRoutes)
@@ -62,6 +63,20 @@ namespace Swaggelot
                 foreach (var openApiSchema in innerSwaggersValue.Components.Schemas)
                 {
                     yield return (openApiSchema.Key, openApiSchema.Value);
+                }
+            }
+        }
+        
+        private IEnumerable<OpenApiTag> GetTags()
+        {
+            foreach (var innerSwaggersValue in _innerDocs.Values)
+            {
+                if (innerSwaggersValue == null)
+                    continue;
+
+                foreach (var tag in innerSwaggersValue.Tags)
+                {
+                    yield return tag;
                 }
             }
         }
