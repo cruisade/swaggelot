@@ -42,6 +42,16 @@ namespace Swaggelot
 
             return this;
         }
+        
+        public OpenApiBuilder WithTags(IEnumerable<OpenApiTag> tags)
+        {
+            foreach (var tag in tags)
+            {
+                _document.Tags.Add(tag);
+            }
+
+            return this;
+        }
 
         private static OpenApiDocument InitDocument()
         {
