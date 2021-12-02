@@ -14,7 +14,11 @@ namespace Swaggelot.Extensions
         {
             services.AddScoped<ISwaggerTransformer, SwaggerTransformer>();
             services
-                .Configure<List<ReRouteOptions>>(options => configuration.GetSection("ReRoutes").Bind(options))
+                .Configure<List<ReRouteOptions>>(options =>
+                {
+                    configuration.GetSection("ReRoutes").Bind(options);
+                    configuration.GetSection("Routes").Bind(options);
+                })
                 .Configure<SwaggerSettings>(options
                     => configuration.GetSection(SwaggerSettings.ConfigurationSectionName).Bind(options))
                 .AddHttpClient<IOpenApiCollector, OpenApiCollector.OpenApiCollector>();

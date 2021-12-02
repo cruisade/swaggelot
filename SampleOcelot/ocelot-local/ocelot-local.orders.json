@@ -1,5 +1,5 @@
 {
-  "ReRoutes": [
+  "Routes": [
     {
       "SwaggerKey": "orders",
       "DownstreamPathTemplate": "/api/v{version}/customers/{customerId}/orders",

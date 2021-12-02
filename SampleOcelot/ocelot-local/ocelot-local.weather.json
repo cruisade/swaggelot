@@ -1,5 +1,5 @@
 {
-  "ReRoutes": [
+  "Routes": [
     {
       "SwaggerKey": "weather",
       "DownstreamPathTemplate": "/api/v{version}/weatherforecast",
