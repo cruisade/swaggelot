@@ -62,6 +62,7 @@ namespace Swaggelot
             return FixExamples(json);
         }
 
+        // OpenApiReader serialize string property like "123" as number
         private string FixExamples(string json)
         {
             var parsed = JToken.Parse(json);
