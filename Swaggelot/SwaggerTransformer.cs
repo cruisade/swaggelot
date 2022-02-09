@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Linq;
 using Swaggelot.Extensions;
 using Swaggelot.Models;
 using Swaggelot.OpenApiCollector;
@@ -21,6 +24,7 @@ namespace Swaggelot
         private readonly ILogger _logger;
 
         private Dictionary<SwaggerDescriptor, OpenApiDocument> _innerDocs;
+        private Dictionary<SwaggerDescriptor, JToken> _jsonDocs;
         private OpenApiDocument _document;
 
         public SwaggerTransformer(
@@ -37,7 +41,11 @@ namespace Swaggelot
 
         public async Task<string> Transform()
         {
-            _innerDocs = await _collector.CollectDownstreamSwaggersAsync();
+            var docs = await _collector.CollectDownstreamSwaggersAsync();
+            _jsonDocs = docs.ToDictionary(
+                x => x.Key,
+                x => x.Value.Item2 == null ? null : JToken.Parse(x.Value.Item2));
+            _innerDocs = docs.ToDictionary(x => x.Key, x => x.Value.Item1);
             _document = OpenApiBuilder
                 .Create()
                 .WithOAuth(_authUrl)
@@ -50,7 +58,28 @@ namespace Swaggelot
                 ProcessReroute(route);
             }
 
-            return _document.Serialize(OpenApiSpecVersion.OpenApi3_0, OpenApiFormat.Json);
+            var json =  _document.Serialize(OpenApiSpecVersion.OpenApi3_0, OpenApiFormat.Json);
+            return FixExamples(json);
+        }
+
+        private string FixExamples(string json)
+        {
+            var parsed = JToken.Parse(json);
+            var tokensToFix = parsed.SelectTokens("$..requestBody..content..examples");
+            var sourceExample = _jsonDocs.Values
+                .Where(x => x != null)
+                .SelectMany(x => x.SelectTokens($"$..requestBody..content..examples"))
+                .GroupBy(x=>((JProperty) x.First).Name)
+                .ToDictionary(g => g.Key, g => g.FirstOrDefault());
+            foreach (var token in tokensToFix)
+            {
+                var obj = (JObject) token;
+                var exampleName = ((JProperty) obj.First).Name;
+                if (sourceExample.ContainsKey(exampleName))
+                    token[exampleName] = sourceExample[exampleName][exampleName];
+            }
+
+            return parsed.ToString();
         }
 
         private IEnumerable<(string Key, OpenApiSchema Value)> GetSchemes()

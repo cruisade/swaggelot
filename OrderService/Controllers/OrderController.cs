@@ -4,7 +4,9 @@ using System.Linq;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using OrderService.Controllers.Examples;
 using OrderService.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace OrderService.Controllers
 {
@@ -33,6 +35,7 @@ namespace OrderService.Controllers
         }
 
         [HttpPost("customers/{customerId}/orders")]
+        [SwaggerRequestExample(typeof(OrderCreateModel), typeof(CreateOrderExamples))]
         [Consumes("application/json")]
         public Guid CreateOrder(Guid customerId, OrderCreateModel order)
         {

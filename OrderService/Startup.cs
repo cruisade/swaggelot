@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace OrderService
 {
@@ -28,6 +29,7 @@ namespace OrderService
                 options.GroupNameFormat = "'v'VVV";
             });
             
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -35,12 +37,17 @@ namespace OrderService
                     Title = "Order API",
                     Version = "v1"
                 });
-                
+                c.EnableAnnotations();
+                c.ExampleFilters();
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath, true);
             });
 
+            services.AddSwaggerExamplesFromAssemblyOf(
+                typeof(Startup)
+            );
+            
             services.AddControllers();
         }
         

@@ -7,7 +7,7 @@ namespace Swaggelot.OpenApiCollector
 {
     public interface IOpenApiCollector
     {
-        Task<Dictionary<SwaggerDescriptor, OpenApiDocument>> CollectDownstreamSwaggersAsync();
+        Task<Dictionary<SwaggerDescriptor, (OpenApiDocument, string)>> CollectDownstreamSwaggersAsync();
     }
 
     public struct SwaggerDescriptor
